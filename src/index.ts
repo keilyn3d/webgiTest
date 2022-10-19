@@ -65,6 +65,7 @@ async function setupViewer(){
 
     await manager.addFromPath("./assets/classic-watch.glb")
 
+
     // Load an environment map if not set in the glb file
     // await viewer.scene.setEnvironment(
     //     await manager.importer!.importSinglePath<ITexture>(
@@ -76,6 +77,39 @@ async function setupViewer(){
     const uiPlugin = await viewer.addPlugin(TweakpaneUiPlugin)
     // Add plugins to the UI to see their settings.
     uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
+
+    let hand_second = viewer.scene.findObjectsByName("hand_second")?.[0];
+    let hand_minute = viewer.scene.findObjectsByName("hand_minute")?.[0];
+    let hand_hour = viewer.scene.findObjectsByName("hand_hour")?.[0];
+
+    let hand_minute_middle = viewer.scene.findObjectsByName("hand_minute_middle")?.[0];
+    if(hand_minute_middle){
+        hand_minute_middle.visible = false;
+    }
+
+    let hand_hour_middle = viewer.scene.findObjectsByName("hand_hour_middle")?.[0];
+    if(hand_hour_middle){
+        hand_hour_middle.visible = false;
+    }
+
+    if(hand_second && hand_minute && hand_hour){
+        setInterval(() => {
+            let date = new Date();
+            let hour = date.getHours();
+            let minute = date.getMinutes();
+            let second = date.getSeconds();
+            
+            let second_offset = 36;
+            let minute_offset = 7.4;
+            let hour_offset = 50.5;
+
+            hand_second.rotation.y = (Math.PI/30) * second_offset - (second / 60) * 2 * Math.PI;
+            hand_minute.rotation.y = (Math.PI/30) * minute_offset - (minute / 60) * 2 * Math.PI;
+            hand_hour.rotation.y = (Math.PI/30) * hour_offset - (hour / 12) * 2 * Math.PI;
+            viewer.setDirty();
+        }, 1000);
+    }else{
+    }
 
 }
 
