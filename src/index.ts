@@ -78,27 +78,29 @@ async function setupViewer(){
     // Add plugins to the UI to see their settings.
     uiPlugin.setupPlugins<IViewerPlugin>(TonemapPlugin, CanvasSnipperPlugin)
 
-    let hand_second = viewer.scene.findObjectsByName("hand_second")?.[0];
-    let hand_minute = viewer.scene.findObjectsByName("hand_minute")?.[0];
-    let hand_hour = viewer.scene.findObjectsByName("hand_hour")?.[0];
-
+    
     let hand_minute_middle = viewer.scene.findObjectsByName("hand_minute_middle")?.[0];
     if(hand_minute_middle){
         hand_minute_middle.visible = false;
     }
-
+    
     let hand_hour_middle = viewer.scene.findObjectsByName("hand_hour_middle")?.[0];
     if(hand_hour_middle){
         hand_hour_middle.visible = false;
     }
+    
 
+    let hand_second = viewer.scene.findObjectsByName("hand_second")?.[0];
+    let hand_minute = viewer.scene.findObjectsByName("hand_minute")?.[0];
+    let hand_hour = viewer.scene.findObjectsByName("hand_hour")?.[0];
     if(hand_second && hand_minute && hand_hour){
         setInterval(() => {
             let date = new Date();
-            let hour = date.getHours();
-            let minute = date.getMinutes();
             let second = date.getSeconds();
-            
+            let minute = date.getMinutes() + second / 60;
+            let hour = date.getHours() + minute / 60;
+
+            // las agujas no estan en el 12 estos son los offsets que tienen
             let second_offset = 36;
             let minute_offset = 7.4;
             let hour_offset = 50.5;
@@ -108,7 +110,7 @@ async function setupViewer(){
             hand_hour.rotation.y = (Math.PI/30) * hour_offset - (hour / 12) * 2 * Math.PI;
             viewer.setDirty();
         }, 1000);
-    }else{
+        
     }
 
 }
